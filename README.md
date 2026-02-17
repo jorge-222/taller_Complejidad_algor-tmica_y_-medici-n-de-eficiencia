@@ -145,6 +145,8 @@ Muestra crecimiento **lento y logarítmico** del tiempo de búsqueda binaria. Au
 **Gráfica 2 (Comparaciones):**  
 Demuestra los **"escalones"** característicos porque log₂(n) produce valores discretos enteros. Cada escalón representa duplicar el tamaño de n, requiriendo solo una comparación adicional.
 
+**Rango usado en la gráfica:** n de 200 a 20,000 (paso 800).
+
 **Ejemplo:** 
 - n=100→1000: crece de 7 a 10 comparaciones (+3)
 - n=1000→10,000: crece de 10 a 14 comparaciones (+4)
