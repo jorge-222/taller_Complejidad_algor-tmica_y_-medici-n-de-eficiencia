@@ -4,6 +4,11 @@ import tracemalloc
 import math
 
 
+TAMANOS_BINARIA = [100, 1000, 10000]
+TAMANOS_COMPARA = [1000, 10000, 100000]
+TAMANOS_GRAF = range(200, 20001, 800)
+
+
 # --- Parte 1: Complejidad O(1) y O(log n) ---
 
 def ejercicio_1_1(n, a, b):
@@ -21,25 +26,25 @@ def ejercicio_1_1(n, a, b):
     # Espacio: O(1) ya que no se requiere memoria adicional proporcional a n
     # Razón: La operación módulo (%) es una operación aritmética básica que se ejecuta
     # en tiempo constante, independientemente del valor de n.
-    es_par = n % 2 == 0
-    print(f"¿{n} es par?: {es_par}")
+    es_paridad = n % 2 == 0
+    print(f"¿{n} es par?: {es_paridad}")
 
     # Obtener el último dígito de n
     # Es O(1) porque realizar el módulo 10 toma un tiempo constante. Espacio: O(1).
     # Razón: La operación módulo 10 es aritmética simple que toma tiempo constante,
     # sin importar cuán grande sea n.
-    ultimo_digito = n % 10
-    print(f"Último dígito de {n}: {ultimo_digito}")
+    digito_final = n % 10
+    print(f"Último dígito de {n}: {digito_final}")
 
     # Devolver el mayor entre dos números a y b (sin max)
     # Es O(1) porque una sola comparación lógica toma tiempo constante. Espacio: O(1).
     # Razón: Solo hace una comparación simple y una asignación condicional,
     # ambas operaciones de tiempo constante.
     if a > b:
-        mayor = a
+        maximo = a
     else:
-        mayor = b
-    print(f"El mayor entre {a} y {b} es: {mayor}")
+        maximo = b
+    print(f"El mayor entre {a} y {b} es: {maximo}")
 
 
 def busqueda_binaria(lista, objetivo):
@@ -79,18 +84,18 @@ def ejercicio_1_2():
     """
     print("\n--- Ejercicio 1.2: Búsqueda Binaria (O(log n)) ---")
     
-    tamanos = [100, 1000, 10000]
-    for n in tamanos:
-        lista = list(range(n))
+    tamanos_prueba = TAMANOS_BINARIA
+    for tam in tamanos_prueba:
+        datos = list(range(tam))
         
         # Mejor caso: elemento en el centro
-        medio = n // 2
-        _, comp_mejor = busqueda_binaria(lista, lista[medio])
+        indice_medio = tam // 2
+        _, comp_mejor = busqueda_binaria(datos, datos[indice_medio])
         
         # Peor caso: elemento no está
-        _, comp_peor = busqueda_binaria(lista, -1)
+        _, comp_peor = busqueda_binaria(datos, -1)
         
-        print(f"Tam n={n} | Mejor caso comps: {comp_mejor} | Peor caso comps: {comp_peor} (log2({n}) ≈ {round(math.log2(n), 1)})")
+        print(f"Tam n={tam} | Mejor caso comps: {comp_mejor} | Peor caso comps: {comp_peor} (log2({tam}) ≈ {round(math.log2(tam), 1)})")
 
 
 # --- Parte 2: Mejor, promedio y peor caso ---
@@ -125,19 +130,19 @@ def ejercicio_2_1():
     - Peor caso: el valor no está o está en la última posición
     """
     print("\n--- Ejercicio 2.1: Búsqueda Lineal ---")
-    n = 1000
-    lista = list(range(n))
+    tam = 1000
+    datos = list(range(tam))
     
     # Mejor caso
-    _, comp_mejor = busqueda_lineal(lista, lista[0])
+    _, comp_mejor = busqueda_lineal(datos, datos[0])
     print(f"Mejor caso (primera pos): {comp_mejor} comparaciones. O(1)")
     
     # Caso promedio
-    _, comp_promedio = busqueda_lineal(lista, lista[n // 2])
+    _, comp_promedio = busqueda_lineal(datos, datos[tam // 2])
     print(f"Caso promedio (mitad): {comp_promedio} comparaciones. O(n)")
     
     # Peor caso
-    _, comp_peor = busqueda_lineal(lista, -1)
+    _, comp_peor = busqueda_lineal(datos, -1)
     print(f"Peor caso (no está): {comp_peor} comparaciones. O(n)")
 
 
@@ -152,30 +157,30 @@ def insertar_en_orden(lista, nuevo_valor):
     Mejor caso: insertar al final - O(1) para inserción (pero O(n) para buscar posición)
     Peor caso: insertar al inicio - O(n) por desplazamientos
     """
-    posicion = len(lista)
+    pos_insercion = len(lista)
     # Buscamos la posición de inserción (O(n) búsqueda lineal)
     for i in range(len(lista)):
         if lista[i] > nuevo_valor:
-            posicion = i
+            pos_insercion = i
             break
             
     # La inserción desplaza (len(lista) - posicion) elementos
-    desplazamientos = len(lista) - posicion
-    lista.insert(posicion, nuevo_valor)
-    return desplazamientos
+    movimientos = len(lista) - pos_insercion
+    lista.insert(pos_insercion, nuevo_valor)
+    return movimientos
 
 
 def ejercicio_2_2():
     print("\n--- Ejercicio 2.2: Inserción en Orden ---")
-    n = 1000
+    tam = 1000
     
     # Mejor caso: insertar al final
-    lista_1 = list(range(n))
-    desp_mejor = insertar_en_orden(lista_1, n + 1)
+    lista_1 = list(range(tam))
+    desp_mejor = insertar_en_orden(lista_1, tam + 1)
     print(f"Mejor caso (al final): {desp_mejor} desplazamientos. O(1) de inserción si es al final (pero buscar pos es O(n)).")
 
     # Peor caso: insertar al inicio
-    lista_2 = list(range(n))
+    lista_2 = list(range(tam))
     desp_peor = insertar_en_orden(lista_2, -1)
     print(f"Peor caso (al inicio): {desp_peor} desplazamientos. O(n)")
 
@@ -195,29 +200,29 @@ def ejercicio_3_1():
     sobre cuál es más eficiente y por qué (O(n) vs O(log n)).
     """
     print("\n--- Ejercicio 3.1: Comparar Búsqueda Lineal vs. Binaria ---")
-    tamanos = [1000, 10000, 100000]
+    tamanos_prueba = TAMANOS_COMPARA
     print(f"{'n':>10} | {'Lineal (ms)':>15} | {'Binaria (ms)':>15}")
     print("-" * 50)
     
-    for n in tamanos:
-        lista = list(range(n))
-        objetivo = -1  # Peor caso para ambas
+    for tam in tamanos_prueba:
+        datos = list(range(tam))
+        buscado = -1  # Peor caso para ambas
         
         # Medir Lineal
-        inicio = time.perf_counter()
-        for _ in range(10): # Promediar sobre 10 ejecuciones
-            busqueda_lineal(lista, objetivo)
-        fin = time.perf_counter()
-        tiempo_lineal = ((fin - inicio) / 10) * 1000
+        t0 = time.perf_counter()
+        for _ in range(10):  # Promediar sobre 10 ejecuciones
+            busqueda_lineal(datos, buscado)
+        t1 = time.perf_counter()
+        tiempo_lineal = ((t1 - t0) / 10) * 1000
         
         # Medir Binaria
-        inicio = time.perf_counter()
-        for _ in range(100): # Binaria es muy rápida, promediamos más
-            busqueda_binaria(lista, objetivo)
-        fin = time.perf_counter()
-        tiempo_binaria = ((fin - inicio) / 100) * 1000
+        t0 = time.perf_counter()
+        for _ in range(100):  # Binaria es muy rápida, promediamos más
+            busqueda_binaria(datos, buscado)
+        t1 = time.perf_counter()
+        tiempo_binaria = ((t1 - t0) / 100) * 1000
         
-        print(f"{n:10d} | {tiempo_lineal:15.4f} | {tiempo_binaria:15.6f}")
+        print(f"{tam:10d} | {tiempo_lineal:15.4f} | {tiempo_binaria:15.6f}")
 
     print("\nConclusión: La búsqueda binaria O(log n) es órdenes de magnitud más rápida que la lineal O(n) a medida que n crece.")
 
@@ -240,30 +245,31 @@ def ejercicio_3_2():
     GENERADOR: produce valores uno a uno (O(1) espacio)
     """
     print("\n--- Ejercicio 3.2: Comparar Uso de Memoria (Lista vs Generador) ---")
-    n = 1000000
+    tam = 1000000
     
     # Memoria para Lista
     # Complejidad en espacio: O(n) - La lista almacena todos los n elementos en memoria simultáneamente
     tracemalloc.start()
-    cuadrados_lista = [i**2 for i in range(n)]
+    lista_cuadrados = [i**2 for i in range(tam)]
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
-    mem_lista = peak / (1024 * 1024)
+    memoria_lista = peak / (1024 * 1024)
     
     # Memoria para Generador (al crearlo)
     # Complejidad en espacio: O(1) - El generador produce valores uno a uno
     # Solo mantiene el estado actual (un valor a la vez), no almacena toda la secuencia en memoria
     tracemalloc.start()
-    cuadrados_gen = (i**2 for i in range(n))
+    gen_cuadrados = (i**2 for i in range(tam))
     current, peak = tracemalloc.get_traced_memory()
     # Consumir generador no debería aumentar memoria drásticamente si no guardamos todo
-    for _ in cuadrados_gen: pass 
+    for _ in gen_cuadrados:
+        pass
     tracemalloc.stop()
-    mem_gen = peak / (1024 * 1024)
+    memoria_gen = peak / (1024 * 1024)
 
-    print(f"n = {n}")
-    print(f"Memoria con Lista: {mem_lista:.2f} MB")
-    print(f"Memoria con Generador: {mem_gen:.6f} MB")
+    print(f"n = {tam}")
+    print(f"Memoria con Lista: {memoria_lista:.2f} MB")
+    print(f"Memoria con Generador: {memoria_gen:.6f} MB")
     print("Conclusión: El generador usa O(1) de espacio adicional (memoria constante), mientras que la lista usa O(n).")
 
 
@@ -282,24 +288,24 @@ def ejercicio_3_3():
         print("Error: matplotlib no está instalado. No se pueden generar gráficas.")
         return
 
-    tamanos = range(100, 10001, 500)
-    tiempos_bin = []
+    tamanos = TAMANOS_GRAF
+    tiempos_binaria = []
     comparaciones_peor = []
 
-    for n in tamanos:
-        lista = list(range(n))
+    for tam in tamanos:
+        datos = list(range(tam))
         # Medir tiempo binaria
-        t = timeit.timeit(lambda: busqueda_binaria(lista, -1), number=1000)
-        tiempos_bin.append(t)
+        t = timeit.timeit(lambda: busqueda_binaria(datos, -1), number=1000)
+        tiempos_binaria.append(t)
         
         # Comparaciones peor caso
-        _, comp = busqueda_binaria(lista, -1)
+        _, comp = busqueda_binaria(datos, -1)
         comparaciones_peor.append(comp)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
     # Gráfica de Tiempo
-    ax1.plot(tamanos, tiempos_bin, marker='o', color='blue')
+    ax1.plot(tamanos, tiempos_binaria, marker='o', color='blue')
     ax1.set_title("Tiempo de Búsqueda Binaria (O(log n))")
     ax1.set_xlabel("Tamaño de la lista (n)")
     ax1.set_ylabel("Tiempo total (s) para 1000 runs")
@@ -318,7 +324,28 @@ def ejercicio_3_3():
 
 # --- Menú principal ---
 
+def ejecutar_todo():
+    ejercicio_1_1(10, 5, 8)
+    ejercicio_1_2()
+    ejercicio_2_1()
+    ejercicio_2_2()
+    ejercicio_3_1()
+    ejercicio_3_2()
+    ejercicio_3_3()
+
+
 def menu():
+    opciones = {
+        "1": lambda: ejercicio_1_1(10, 5, 8),
+        "2": ejercicio_1_2,
+        "3": ejercicio_2_1,
+        "4": ejercicio_2_2,
+        "5": ejercicio_3_1,
+        "6": ejercicio_3_2,
+        "7": ejercicio_3_3,
+        "8": ejecutar_todo,
+    }
+
     while True:
         print("\n=== TALLER DE COMPLEJIDAD ALGORÍTMICA ===")
         print("1. Ejercicio 1.1 (O(1))")
@@ -330,26 +357,17 @@ def menu():
         print("7. Ejercicio 3.3 (Gráficas)")
         print("8. Ejecutar todo secuencialmente")
         print("0. Salir")
-        
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == "1": ejercicio_1_1(10, 5, 8)
-        elif opcion == "2": ejercicio_1_2()
-        elif opcion == "3": ejercicio_2_1()
-        elif opcion == "4": ejercicio_2_2()
-        elif opcion == "5": ejercicio_3_1()
-        elif opcion == "6": ejercicio_3_2()
-        elif opcion == "7": ejercicio_3_3()
-        elif opcion == "8":
-            ejercicio_1_1(10, 5, 8)
-            ejercicio_1_2()
-            ejercicio_2_1()
-            ejercicio_2_2()
-            ejercicio_3_1()
-            ejercicio_3_2()
-            ejercicio_3_3()
-        elif opcion == "0": break
-        else: print("Opción inválida.")
+
+        opcion = input("Seleccione una opción: ").strip()
+
+        if opcion == "0":
+            break
+
+        accion = opciones.get(opcion)
+        if accion:
+            accion()
+        else:
+            print("Opción inválida.")
 
 
 if __name__ == "__main__":
